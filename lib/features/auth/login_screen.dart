@@ -1,5 +1,6 @@
 import 'package:ceylon_cypher_app/features/auth/register_screen.dart';
 import 'package:ceylon_cypher_app/features/dashboard/home_screen.dart';
+import 'package:ceylon_cypher_app/features/dashboard/main_navigation_container.dart';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 
@@ -101,7 +102,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const HomeScreen()),
+                          builder: (context) =>
+                              const MainNavigationContainer()),
                     );
                   },
                   child: const Text('Sign In',
