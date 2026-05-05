@@ -1,5 +1,8 @@
+import 'package:ceylon_cypher_app/features/dashboard/community_feed_content.dart';
 import 'package:ceylon_cypher_app/features/dashboard/home_screen.dart';
+import 'package:ceylon_cypher_app/features/dashboard/library_feed_content.dart';
 import 'package:ceylon_cypher_app/features/dashboard/now_playing_screen.dart';
+import 'package:ceylon_cypher_app/features/dashboard/profile_feed_content.dart';
 import 'package:ceylon_cypher_app/features/dashboard/search_feed_content.dart';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
@@ -20,9 +23,9 @@ class _MainNavigationContainerState extends State<MainNavigationContainer> {
   final List<Widget> _pages = [
     const HomeScreen(), // The code from our previous Home task
     const SearchFeedContent(),
-    const Center(child: Text('Library')),
-    const Center(child: Text('Community')),
-    const Center(child: Text('Profile')),
+    const LibraryFeedContent(),
+    const CommunityFeedContent(),
+    const ProfileFeedContent(),
   ];
 
   void _onItemTapped(int index) {
@@ -92,10 +95,14 @@ class _MainNavigationContainerState extends State<MainNavigationContainer> {
         child: Row(
           children: [
             // Album Art
-            ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: Image.network('https://picsum.photos/40/40',
-                  width: 40, height: 40),
+            Hero(
+              tag:
+                  'current-art', // Must match the tag on the Now Playing screen
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: Image.network('https://picsum.photos/40/40',
+                    width: 40, height: 40),
+              ),
             ),
             const SizedBox(width: 12),
             // Track Info (Tapping here opens Now Playing)

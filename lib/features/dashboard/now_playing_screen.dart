@@ -10,8 +10,11 @@ class NowPlayingScreen extends StatefulWidget {
   State<NowPlayingScreen> createState() => _NowPlayingScreenState();
 }
 
-class _NowPlayingScreenState extends State<NowPlayingScreen> {
+class _NowPlayingScreenState extends State<NowPlayingScreen>
+    with SingleTickerProviderStateMixin {
   bool _showLyrics = false;
+  bool _isPlaying = false;
+  late AnimationController _playPauseController;
 
   // Sample Data for Testing
   final List<LyricLine> _sampleLyrics = [
@@ -32,6 +35,31 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
     ),
     LyricLine(text: "Drop anchor in the harbor of a heavy weight."),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Animation duration for the play/pause morphing effect
+    _playPauseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+  }
+
+  @override
+  void dispose() {
+    _playPauseController.dispose();
+    super.dispose();
+  }
+
+  void _handlePlayPause() {
+    setState(() {
+      _isPlaying = !_isPlaying;
+      _isPlaying
+          ? _playPauseController.forward()
+          : _playPauseController.reverse();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,20 +192,52 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        const Icon(Icons.shuffle, color: Colors.grey, size: 20),
-        const Icon(Icons.skip_previous_rounded, color: Colors.white, size: 40),
-        Container(
-          width: 64,
-          height: 64,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(Icons.pause_rounded,
-              color: AppColors.deepNavy, size: 32),
+        IconButton(
+          icon: const Icon(Icons.shuffle),
+          color: Colors.grey,
+          iconSize: 20,
+          onPressed: () => print("Shuffle toggled"),
         ),
-        const Icon(Icons.skip_next_rounded, color: Colors.white, size: 40),
-        const Icon(Icons.repeat, color: Colors.grey, size: 20),
+        IconButton(
+          icon: const Icon(Icons.skip_previous_rounded),
+          color: Colors.white,
+          iconSize: 40,
+          onPressed: () => print("Previous Track"),
+        ),
+
+        // THE ANIMATED PLAY/PAUSE BUTTON
+        GestureDetector(
+          onTap: _handlePlayPause,
+          child: Container(
+            width: 64,
+            height: 64,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: AnimatedIcon(
+                icon: AnimatedIcons.play_pause,
+                progress: _playPauseController,
+                color: AppColors.deepNavy,
+                size: 32,
+              ),
+            ),
+          ),
+        ),
+
+        IconButton(
+          icon: const Icon(Icons.skip_next_rounded),
+          color: Colors.white,
+          iconSize: 40,
+          onPressed: () => print("Next Track"),
+        ),
+        IconButton(
+          icon: const Icon(Icons.repeat),
+          color: Colors.grey,
+          iconSize: 20,
+          onPressed: () => print("Repeat toggled"),
+        ),
       ],
     );
   }
